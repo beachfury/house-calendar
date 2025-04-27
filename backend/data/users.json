@@ -1,0 +1,7 @@
+[
+    { "id": "1", "name": "Robert", "role": "admin" },
+    { "id": "2", "name": "Karina", "role": "admin" },
+    { "id": "3", "name": "Kike",   "role": "member" },
+    { "id": "4", "name": "Takoda", "role": "member" }
+  ]
+  

@@ -1,0 +1,65 @@
+// prisma/schema.prisma
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  hash      String
+  role      Role      @default(MEMBER)
+  tasks     Task[]    @relation("UserTasks")
+  settings  Setting?  @relation(fields: [settingsId], references: [id])
+
+  // storing a separate FK solely for the one‑to‑one settings relation
+  settingsId Int?     
+}
+
+model Task {
+  id           Int        @id @default(autoincrement())
+  title        String
+  description  String?
+  startTime    DateTime
+  endTime      DateTime?
+  recurrence   Json       // store RRule or similar JSON rule
+  type         TaskType
+  owner        User?      @relation("UserTasks", fields: [ownerId], references: [id])
+  ownerId      Int?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+model Setting {
+  id          Int      @id @default(autoincrement())
+  // one‑to‑one back to User
+  user        User     @relation(fields: [userId], references: [id])
+  userId      Int      @unique
+
+  theme       String   // e.g. "light" or "dark"
+  fontFamily  String   // e.g. "Inter", "Roboto"
+  fontSize    Int      // e.g. 14, 16, 18
+  // add other per‑user preferences here
+}
+
+enum Role {
+  ADMIN
+  MEMBER
+}
+
+enum TaskType {
+  CHORE
+  APPOINTMENT
+  MEAL
+  PAID_CHORE
+  TODO
+  SHOPPING
+  EVENT
+  BUDGET
+  NOTE
+}

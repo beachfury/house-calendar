@@ -1,0 +1,21 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "module": "ESNext",
+    "target": "ES2022",
+    "moduleResolution": "bundler",
+    "isolatedModules": true,
+    "types": ["vite/client"],        // ← still reference the Vite client types
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    "outDir": "../dist/frontend"
+  },
+  "include": [
+    "src/env.d.ts",                  // ← reference file for vite/client
+    "src",
+    "../backend/src/server"
+  ]
+}

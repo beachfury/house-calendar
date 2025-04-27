@@ -1,0 +1,22 @@
+import WidgetWrapper from '../../core/WidgetWrapper';
+import { SomeIcon } from 'lucide-react';
+import { useState, useEffect } from 'react';
+
+export default function [WidgetName]Widget() {
+  const [state, setState] = useState([default]);
+
+  useEffect(() => {
+    // logic if needed
+    return () => {
+      // cleanup
+    };
+  }, []);
+
+  return (
+    <WidgetWrapper title="[Widget Title]">
+      <div className="text-gray-700 dark:text-gray-200">
+        {/* Widget-specific content here */}
+      </div>
+    </WidgetWrapper>
+  );
+}

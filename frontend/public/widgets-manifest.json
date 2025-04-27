@@ -1,0 +1,18 @@
+[
+  {
+    "id": "multi-clock",
+    "title": "MultiClock",
+    "icon": "/widgets/library/time/multi-clock/assets/icon.svg",
+    "description": "Displays up to four customizable clocks in different timezones with real-time updates.",
+    "category": "time",
+    "path": "/widgets/library/time/multi-clock/*",
+    "defaultLayout": {
+      "w": 6,
+      "h": 5,
+      "minW": 4,
+      "maxW": 8,
+      "minH": 4,
+      "maxH": 8
+    }
+  }
+]

@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "target": "ES2021",
+    "module": "commonjs",
+    "rootDir": "./src",
+    "outDir": "../dist/backend",
+    "strict": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+
+    // ✅ Path alias config
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["*"],
+      "@data/*": ["../data/*"],
+      "@routes/*": ["routes/*"]
+    }
+  },
+"include": [
+  "src/**/*", 
+  "src/routes/**/*", 
+  "../data/**/*.json"
+],
+  "exclude": [
+    "node_modules", 
+    "../dist"
+  ]
+}
