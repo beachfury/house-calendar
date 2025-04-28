@@ -1,7 +1,8 @@
 {
   "darkMode": false,
-  "themeColor": "#cbd1dc",
+  "themeColor": "#9aa0ac",
   "fontFamily": "sans",
   "fontSize": "base",
-  "backgroundImageUrl": ""
+  "backgroundImageUrl": "",
+  "themeName": "space"
 }

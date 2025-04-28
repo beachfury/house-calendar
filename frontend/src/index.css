@@ -3,15 +3,18 @@
 
 /* 2. Your custom CSS variables */
 :root {
-  --color-chore:       #fbbf24;
-  --color-appointment: #3b82f6;
-  --color-meal:        #10b981;
-  --color-paid-chore:  #8b5cf6;
-  --color-todo:        #ef4444;
-  --color-shopping:    #f97316;
-  --color-event:       #6366f1;
-  --color-budget:      #14b8a6;
-  --color-note:        #f472b6;
+  --theme-color: #3b82f6;       /* default accent */
+  --font-family: sans;          /* default */
+  --font-size: 1rem;            /* base */
+  --background-image: none;     /* replace via JS */
+}
+
+/* apply font & background globally */
+html {
+  font-family: var(--font-family);
+  font-size: var(--font-size);
+  background: var(--background-image) center/cover,
+              var(--tw-bg-opacity) var(--tw-bg-color);
 }
 
 /* 3. Any global helper classes you still want */

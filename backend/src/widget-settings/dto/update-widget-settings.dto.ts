@@ -1,6 +1,7 @@
 // backend/src/widget-settings/dto/update-widget-settings.dto.ts
+import { IsObject } from 'class-validator';
+
 export class UpdateWidgetSettingsDto {
-    // You can tighten this up to exactly the shape your widgets expect
-    [key: string]: any;
-  }
-  
+  @IsObject()
+  settings!: Record<string, any>;
+}

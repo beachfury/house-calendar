@@ -14,11 +14,11 @@ export class UpdateSettingsDto {
 
   @IsOptional()
   @IsString()
-  themeColor?: string;              // primary accent color (e.g. "#3b82f6")
+  themeColor?: string;              // e.g. "#3b82f6"
 
   @IsOptional()
   @IsString()
-  fontFamily?: string;              // e.g. "Arial", "Roboto", "sans-serif"
+  fontFamily?: string;              // e.g. "Arial", "Roboto"
 
   @IsOptional()
   @IsString()
@@ -30,5 +30,5 @@ export class UpdateSettingsDto {
 
   @IsOptional()
   @IsString()
-  themeName?: string;               // optional theme
+  themeName?: string;               // optional named theme
 }

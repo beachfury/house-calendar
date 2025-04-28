@@ -1,5 +1,5 @@
 // backend/src/dashboard-layouts/default-widgets.ts
-import { LayoutItemDto } from '@/dashboard-layouts/dto/layout-item';
+import { LayoutItemDto } from '@/dashboard-layouts/dto/layout-item.dto';
 import { LayoutItem } from '../routes/dashboardLayouts';
 
 export interface DefaultWidget extends LayoutItem {

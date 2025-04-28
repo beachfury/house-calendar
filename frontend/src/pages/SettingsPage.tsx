@@ -4,20 +4,35 @@ import React, { ChangeEvent, useEffect, useContext } from 'react'
 import { useSettings } from '../context/SettingsContext'
 import { UserContext } from '../context/UserContext'
 import {
-  User, Image, Sun, Moon, Calendar, Bell, MapPin, Link2, Key,
-  ShieldOff, Home, Droplet, Repeat, Users, Mail, Database,
-  ToggleLeft, Clock,
+  User as UserIcon,
+  Image as ImageIcon,
+  Sun,
+  Moon,
+  Calendar,
+  Bell,
+  MapPin,
+  Link2,
+  Key,
+  ShieldOff,
+  Home,
+  Droplet,
+  Repeat,
+  Users,
+  Mail,
+  Database,
+  ToggleLeft,
+  Clock,
 } from 'lucide-react'
 
 /**
  * SettingsPage
  *
  * - Fetches and displays user settings via SettingsContext
- * - Allows updating darkMode, themeColor, fontFamily, fontSize, backgroundImageUrl
+ * - Allows updating darkMode, themeName, themeColor, fontFamily,
+ *   fontSize, backgroundImageUrl
  * - Syncs <html> class when darkMode changes
  * - Renders Member Settings for all users, Admin Settings only for admins
  */
-
 
 export default function SettingsPage() {
   // ───────────────────────────────────────────────────────────────
@@ -26,22 +41,12 @@ export default function SettingsPage() {
   const { settings, isLoading, error, updateSettings } = useSettings()
   const { currentUser } = useContext(UserContext)
 
-  // ────────────────────────────────────────────────────────────────────
-  // 2) Sync `.dark` class on <html> every render (guard inside effect)
-  // ____________________________________________________________________
-  useEffect(() => {
-    if (settings) {
-      document.documentElement.classList.toggle('dark', settings.darkMode)
-    }
-  }, [settings?.darkMode])
-  
-
   // ───────────────────────────────────────────────────────────────
   // 3) Early returns for loading / error
   // ───────────────────────────────────────────────────────────────
   if (isLoading) return <p>Loading settings…</p>
   if (error)     return <p className="text-red-500">Error: {error.message}</p>
-  if (!settings) return null // safety
+  if (!settings) return null
 
   // ───────────────────────────────────────────────────────────────
   // 4) Generic field updater
@@ -85,20 +90,47 @@ export default function SettingsPage() {
               </h3>
             </div>
             <div className="space-y-4">
-              {/* Theme toggle */}
+              {/* Dark mode toggle */}
               <label className="flex items-center space-x-2">
-                <span className="text-sm text-gray-600 dark:text-gray-300">Theme</span>
+                <span className="text-sm text-gray-600 dark:text-gray-300">Dark mode</span>
+                <input
+                  type="checkbox"
+                  checked={settings.darkMode}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    handleChange('darkMode', e.target.checked)
+                  }
+                  className="ml-auto form-checkbox"
+                />
+              </label>
+
+              {/* App skin selector */}
+              <label className="flex items-center space-x-2">
+                <span className="text-sm text-gray-600 dark:text-gray-300">App skin</span>
                 <select
                   className="ml-auto rounded border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100"
-                  value={settings.darkMode ? 'dark' : 'light'}
+                  value={settings.themeName}
                   onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-                    handleChange('darkMode', e.target.value === 'dark')
+                    handleChange('themeName', e.target.value)
                   }
                 >
-                  <option value="light">Light</option>
-                  <option value="dark">Dark</option>
-                  <option value="system">System</option>
+                  <option value="default">Default</option>
+                  <option value="space">Space</option>
+                  <option value="anime">Anime</option>
+                  {/* TODO: more skins */}
                 </select>
+              </label>
+
+              {/* Accent color */}
+              <label className="flex items-center space-x-2">
+                <span className="text-sm text-gray-600 dark:text-gray-300">Accent Color</span>
+                <input
+                  type="color"
+                  className="ml-auto h-8 w-12 p-0 border-0"
+                  value={settings.themeColor}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    handleChange('themeColor', e.target.value)
+                  }
+                />
               </label>
 
               {/* Font family */}
@@ -133,20 +165,7 @@ export default function SettingsPage() {
                 </select>
               </label>
 
-              {/* Accent color */}
-              <label className="flex items-center space-x-2">
-                <span className="text-sm text-gray-600 dark:text-gray-300">Accent Color</span>
-                <input
-                  type="color"
-                  className="ml-auto h-8 w-12 p-0 border-0"
-                  value={settings.themeColor}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    handleChange('themeColor', e.target.value)
-                  }
-                />
-              </label>
-
-              {/* Background image URL (stub—needs backend + UI) */}
+              {/* Background image URL */}
               <label className="flex items-center space-x-2">
                 <span className="text-sm text-gray-600 dark:text-gray-300">Background Image</span>
                 <input
@@ -154,7 +173,7 @@ export default function SettingsPage() {
                   readOnly
                   className="ml-auto rounded border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100"
                   value={settings.backgroundImageUrl}
-                  placeholder="URL or upload below"
+                  placeholder="upload below"
                 />
               </label>
               <input
@@ -164,7 +183,7 @@ export default function SettingsPage() {
                 onChange={(e: ChangeEvent<HTMLInputElement>) => {
                   const file = e.target.files?.[0]
                   if (file) {
-                    // TODO: upload to backend, then:
+                    // TODO: upload to backend → return URL
                     const url = URL.createObjectURL(file)
                     handleChange('backgroundImageUrl', url)
                   }
@@ -173,7 +192,7 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          {/* Calendar View */}
+          {/* Calendar View (TODO) */}
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
             <div className="flex items-center mb-4">
               <Calendar className="w-6 h-6 mr-2 text-indigo-500" />
@@ -181,12 +200,10 @@ export default function SettingsPage() {
                 Calendar View
               </h3>
             </div>
-            <div className="space-y-4">
-              {/* TODO: defaultCalendarView, weekStartsOn */}
-            </div>
+            <div className="space-y-4">{/* TODO */}</div>
           </div>
 
-          {/* Notifications */}
+          {/* Notifications (TODO) */}
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
             <div className="flex items-center mb-4">
               <Bell className="w-6 h-6 mr-2 text-pink-500" />
@@ -194,12 +211,10 @@ export default function SettingsPage() {
                 Notifications
               </h3>
             </div>
-            <div className="space-y-4">
-              {/* TODO: emailReminders, pushNotifications, defaultReminder */}
-            </div>
+            <div className="space-y-4">{/* TODO */}</div>
           </div>
 
-          {/* Time Zone & Locale */}
+          {/* Time Zone & Locale (TODO) */}
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
             <div className="flex items-center mb-4">
               <MapPin className="w-6 h-6 mr-2 text-teal-500" />
@@ -207,36 +222,7 @@ export default function SettingsPage() {
                 Time Zone & Locale
               </h3>
             </div>
-            <div className="space-y-4">
-              {/* TODO: timeZone, dateFormat */}
-            </div>
-          </div>
-
-          {/* Integrations */}
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
-            <div className="flex items-center mb-4">
-              <Link2 className="w-6 h-6 mr-2 text-indigo-400" />
-              <h3 className="text-xl font-medium text-gray-800 dark:text-gray-100">
-                Integrations
-              </h3>
-            </div>
-            <div className="space-y-4">
-              {/* TODO: Connect Google/Outlook */}
-            </div>
-          </div>
-
-          {/* Security */}
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow col-span-1 md:col-span-2">
-            <div className="flex items-center mb-4">
-              <Key className="w-6 h-6 mr-2 text-yellow-500" />
-              <ShieldOff className="w-6 h-6 mr-2 text-red-500" />
-              <h3 className="text-xl font-medium text-gray-800 dark:text-gray-100">
-                Security
-              </h3>
-            </div>
-            <div className="space-y-4">
-              {/* TODO: changePassword, twoFactor */}
-            </div>
+            <div className="space-y-4">{/* TODO */}</div>
           </div>
         </div>
       </section>

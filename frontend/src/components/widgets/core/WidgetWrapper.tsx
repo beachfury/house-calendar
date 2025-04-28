@@ -1,50 +1,61 @@
-// src/components/widgets/core/WidgetWrapper.tsx
+// frontend/src/components/widgets/core/WidgetWrapper.tsx
+
 import React from 'react';
 import { GripVertical, Trash2 } from 'lucide-react';
+import { widgetRegistry }      from './widgetRegistry';
+import { useWidgetSettings } from '../../../hooks/useWidgetSettings';
 
 interface WidgetWrapperProps {
-  title?: string;
-  children: React.ReactNode;
+  userId: string;
+  instanceId: string;
+  widgetType: string;
   showHandle?: boolean;
   onRemove?: () => void;
+  children: React.ReactElement<any>;
 }
 
 export default function WidgetWrapper({
-  title,
-  children,
+  userId,
+  instanceId,
+  widgetType,
   showHandle = true,
   onRemove,
+  children,
 }: WidgetWrapperProps) {
-  return (
-    <div className="h-full relative">
-      {showHandle && (
-        <div
-          className="absolute top-0 left-0 right-0 h-8 px-2 flex items-center justify-between z-20"
-          aria-label={title}
-        >
-          {/* only this icon is draggable */}
-          <GripVertical
-            size={16}
-            className="widget-drag text-gray-400 cursor-move"
-          />
+  const manifest = widgetRegistry.find((w) => w.id === widgetType);
+  if (!manifest) {
+    return <div>Unknown widget type: {widgetType}</div>;
+  }
 
+  const { settings, saveSettings } = useWidgetSettings(
+    userId,
+    instanceId,
+    manifest.defaultSettings
+  );
+
+  if (settings === null) {
+    return <div>Loading widget…</div>;
+  }
+
+  return (
+    <div className="relative bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+      {showHandle && (
+        <div className="absolute top-1 right-1 flex space-x-2 cursor-move">
+          <GripVertical />
           {onRemove && (
-            <button
-              onClick={onRemove}
-              onPointerDown={(e: React.PointerEvent<HTMLButtonElement>) => {
+            <Trash2
+              onClick={(e) => {
                 e.stopPropagation();
+                onRemove();
               }}
               className="text-red-400 hover:text-red-600"
-            >
-              <Trash2 size={16} />
-            </button>
+            />
           )}
         </div>
       )}
-
-      {/* reserve space for that 8px-high bar, then render the widget’s card */}
-      <div className="widget-inner h-full pt-8 flex flex-col overflow-hidden">
-        {children}
+      <div className="p-4">
+        {/* inject settings into the actual widget */}
+        {React.cloneElement(children, { settings, saveSettings })}
       </div>
     </div>
   );

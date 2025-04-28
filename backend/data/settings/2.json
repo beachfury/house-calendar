@@ -3,5 +3,6 @@
   "themeColor": "#3b82f6",
   "fontFamily": "sans",
   "fontSize": "base",
-  "backgroundImageUrl": ""
+  "backgroundImageUrl": "",
+  "themeName": "default"
 }
