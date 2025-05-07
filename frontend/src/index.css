@@ -1,13 +1,35 @@
-/* frontend/src/index.css */
+/* src/index.css */
 
-/* 1) Preflight (formerly @tailwind base) */
-@import "tailwindcss/preflight";
+/* 1) Base layer (reset + core) */
+@tailwind base;
 
-/* 2) Tailwind component & utility layers */
+/* 2) Your CSS-variable defaults and dark-mode overrides */
+@layer base {
+  /* Light-mode defaults */
+  :root {
+    --theme-color: #3b82f6;
+    --bg-color:   white;
+    --text-color: black;
+  }
+
+  /* Dark-mode overrides */
+  .dark {
+    --theme-color: #f472b6;
+    --bg-color:   #1f2937;
+    --text-color: #f9fafb;
+  }
+
+  /* Apply globally */
+  body {
+    background-color: var(--bg-color);
+    color:            var(--text-color);
+  }
+}
+
+/* 3) Tailwind’s built-in component classes */
 @tailwind components;
-@tailwind utilities;
 
-/* 3) Component-level styles */
+/* 4) Your custom component‐layer styles */
 @layer components {
   .widget-inner {
     @apply
@@ -22,3 +44,6 @@
       overflow-hidden;
   }
 }
+
+/* 5) All of Tailwind’s utility classes */
+@tailwind utilities;
