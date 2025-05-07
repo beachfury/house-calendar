@@ -1,0 +1,8 @@
+{
+    "id": "default",
+    "name": "Default",
+    "variants": ["light", "dark"],
+    "category": "Built-in",
+    "previewImage": "/themes/default/preview.png"
+  }
+  

@@ -1,22 +1,20 @@
-// tailwind.config.js
 /**
  * Tailwind CSS configuration
  *
- * - darkMode: 'class' so we can toggle .dark on <html>
- * - extend.primary ← CSS var driven by SettingsContext
+ * - darkMode: 'class' so we can use the .dark class for dark variants
+ * - content: includes CSS files so @apply works
+ * - colors.primary: still mapped to --theme-color, in case themes use it
  */
 module.exports = {
-  darkMode: 'class',  // toggled via document.documentElement.classList
+  darkMode: 'class', 
   content: [
     './index.html',
-    './src/**/*.{js,ts,jsx,tsx,css}',
+    './src/**/*.{js,ts,jsx,tsx,html,css}',
   ],
   theme: {
     extend: {
       colors: {
-        primary: 'var(--theme-color)',       // your app’s accent color
-        // add more CSS-var driven slots here:
-        // secondary: 'var(--color-secondary)',
+        primary: 'var(--theme-color)',
       },
     },
   },

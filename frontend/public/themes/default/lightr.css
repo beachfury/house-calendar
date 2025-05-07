@@ -1,0 +1,13 @@
+/* Default Theme — Light Variant */
+
+/* Body background & text for light mode */
+body {
+    background-color: white;
+    color: black;
+  }
+  
+  /* Accent color slot — used by any “text-primary” or “bg-primary” classes */
+  :root {
+    --theme-color: #3b82f6;  /* Tailwind blue-500 by default */
+  }
+  

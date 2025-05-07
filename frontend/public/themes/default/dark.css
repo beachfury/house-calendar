@@ -1,0 +1,13 @@
+/* Default Theme — Dark Variant */
+
+/* Body background & text for dark mode */
+body {
+    background-color: #1f2937;   /* Tailwind gray-800 */
+    color: #f9fafb;              /* Tailwind gray-100 */
+  }
+  
+  /* Accent color stays the same (or feel free to pick a darker shade) */
+  :root {
+    --theme-color: #3b82f6;
+  }
+  

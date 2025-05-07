@@ -1,12 +1,12 @@
-// backend/src/settings/interfaces/user-settings.interface.ts
+/**
+ * UserSettings
+ *
+ * Shape of the settings object persisted per user on disk.
+ * Now only includes:
+ *  • themeId:      which theme folder to load
+ *  • themeVariant: which CSS variant (light/dark)
+ */
 export interface UserSettings {
-  darkMode: boolean
-  themeColor: string
-  fontFamily: string
-  fontSize: string
-  backgroundImageUrl: string
-  themeName: string;
-  // + calendarView?: 'month'|'week'|'day'
-  // + emailReminders?: boolean
-  // …etc.
+  themeId: string;              // e.g. "default", "minecraft"
+  themeVariant: 'light' | 'dark';
 }

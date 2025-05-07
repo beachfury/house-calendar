@@ -1,12 +1,9 @@
-// backend/src/settings/settings.controller.ts
 /**
  * SettingsController
  *
  * Exposes:
  *  GET  /api/settings/:userId    → fetch current settings (or defaults)
- *  PUT  /api/settings/:userId    → patch and persist settings
- *
- * Extend here if you need e.g. POST to reset to defaults, or DELETE.
+ *  PUT  /api/settings/:userId    → merge patch and persist
  */
 import {
   Controller,
@@ -16,8 +13,9 @@ import {
   ParseIntPipe,
   Body,
 } from '@nestjs/common';
+import { SettingsService } from './settings.service';
 import { UpdateSettingsDto } from './dto/update-settings.dto';
-import { SettingsService, UserSettings } from './settings.service';
+import { UserSettings } from './interfaces/user-settings.interface';
 
 @Controller('settings')
 export class SettingsController {
@@ -27,7 +25,7 @@ export class SettingsController {
   async getSettings(
     @Param('userId', ParseIntPipe) userId: number,
   ): Promise<UserSettings> {
-    // → returns defaults if none exist on disk
+    // Returns existing settings or writes defaults on first access
     return this.svc.getSettings(userId.toString());
   }
 
@@ -36,7 +34,7 @@ export class SettingsController {
     @Param('userId', ParseIntPipe) userId: number,
     @Body() patch: UpdateSettingsDto,
   ): Promise<UserSettings> {
-    // → merges patch into existing, writes file, returns updated
+    // Applies only themeId & themeVariant
     return this.svc.updateSettings(userId.toString(), patch);
   }
 }

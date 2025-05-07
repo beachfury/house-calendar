@@ -1,27 +1,26 @@
 /**
  * SettingsContext
  *
- * - Fetches /api/settings/:userId on mount
+ * - Fetches GET /api/settings/:userId on mount
  * - Exposes settings, loading state, error, and updateSettings()
- * - Synchronizes:
- *    • `dark` class on <html> for light/dark mode
- *    • CSS variables (--theme-color, --font-family, --font-size, --background-image, data-theme) on <html>
- *
- * Wrap your entire <App> in <SettingsProvider userId={...}> so these side-effects run once.
+ * - Only handles themeId and themeVariant (no more CSS-variable logic)
+ * - Toggles <html>.dark based on themeVariant === 'dark'
+ * - Injects a <link> to /themes/{themeId}/{themeVariant}.css
  */
 
-import React, { createContext, useContext, useEffect, ReactNode } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  ReactNode,
+} from 'react';
 import axios from 'axios';
 import { useQuery, useMutation } from 'react-query';
 
-// shape returned by backend
+// New shape: only themeId + variant
 export interface UserSettings {
-  darkMode: boolean;           // true = dark, false = light
-  themeColor: string;          // primary accent (hex)
-  fontFamily: string;          // e.g. "sans", "serif", "mono"
-  fontSize: string;            // e.g. "sm", "base", "lg"
-  backgroundImageUrl: string;  // fullscreen background image URL
-  themeName: string;           // named skin, e.g. "default", "space", "anime"
+  themeId: string;             // folder under /public/themes/
+  themeVariant: 'light' | 'dark';
 }
 
 export interface SettingsContextValue {
@@ -35,7 +34,8 @@ const SettingsContext = createContext<SettingsContextValue>({
   settings: undefined,
   isLoading: false,
   error: null,
-  updateSettings: () => Promise.reject(new Error('SettingsProvider not mounted')),
+  updateSettings: () =>
+    Promise.reject(new Error('SettingsProvider not mounted')),
 });
 
 interface Props {
@@ -44,7 +44,7 @@ interface Props {
 }
 
 export function SettingsProvider({ userId, children }: Props) {
-  // 1) Fetch current settings
+  // 1) Load settings
   const {
     data: settings,
     isLoading,
@@ -52,58 +52,44 @@ export function SettingsProvider({ userId, children }: Props) {
     refetch,
   } = useQuery<UserSettings, Error>(
     ['settings', userId],
-    () => axios.get(`/api/settings/${userId}`).then(res => res.data)
+    () => axios.get(`/api/settings/${userId}`).then((res) => res.data)
   );
 
-  // 2) Mutation to PUT updates
+  // 2) Patch settings
   const mutation = useMutation<UserSettings, Error, Partial<UserSettings>>(
-    patch => axios.put(`/api/settings/${userId}`, patch).then(res => res.data),
+    (patch) =>
+      axios.put(`/api/settings/${userId}`, patch).then((res) => res.data),
     { onSuccess: () => void refetch() }
   );
 
-  // ───────────────────────────────────────────────────────────────
-  // 3) Sync `.dark` class on <html> as soon as settings.darkMode is known
-  // ───────────────────────────────────────────────────────────────
+  // 3) Toggle .dark class based on themeVariant
   useEffect(() => {
-    if (settings !== undefined) {
-      document.documentElement.classList.toggle('dark', settings.darkMode);
+    if (settings) {
+      document.documentElement.classList.toggle(
+        'dark',
+        settings.themeVariant === 'dark'
+      );
     }
-  }, [settings?.darkMode]);
+  }, [settings?.themeVariant]);
 
-  // ───────────────────────────────────────────────────────────────
-  // 4) Write CSS vars & data-attrs for theme
-  // ───────────────────────────────────────────────────────────────
+  // 4) Inject or update the <link> to the theme’s CSS file
   useEffect(() => {
     if (!settings) return;
+    const { themeId, themeVariant } = settings;
+    const href = `/themes/${themeId}/${themeVariant}.css`;
+    const LINK_ID = 'user-theme-css';
 
-    document.documentElement.style.setProperty(
-      '--theme-color',
-      settings.themeColor
-    );
-    document.documentElement.style.setProperty(
-      '--font-family',
-      settings.fontFamily
-    );
-    document.documentElement.style.setProperty(
-      '--font-size',
-      settings.fontSize
-    );
-    // background-image
-    document.documentElement.style.setProperty(
-      '--background-image',
-      settings.backgroundImageUrl
-        ? `url(${settings.backgroundImageUrl})`
-        : 'none'
-    );
-    // named skin for more complex theming
-    document.documentElement.setAttribute('data-theme', settings.themeName);
-  }, [
-    settings?.themeColor,
-    settings?.fontFamily,
-    settings?.fontSize,
-    settings?.backgroundImageUrl,
-    settings?.themeName,
-  ]);
+    let linkEl = document.getElementById(LINK_ID) as HTMLLinkElement | null;
+    if (linkEl) {
+      linkEl.href = href;               // swap href on variant change
+    } else {
+      linkEl = document.createElement('link');
+      linkEl.id = LINK_ID;
+      linkEl.rel = 'stylesheet';
+      linkEl.href = href;
+      document.head.appendChild(linkEl);
+    }
+  }, [settings?.themeId, settings?.themeVariant]);
 
   return (
     <SettingsContext.Provider

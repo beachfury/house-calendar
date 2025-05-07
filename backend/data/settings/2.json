@@ -1,8 +1,8 @@
 {
-  "darkMode": true,
-  "themeColor": "#3b82f6",
-  "fontFamily": "sans",
-  "fontSize": "base",
+  "darkMode": false,
+  "themeColor": "#a4a9b2",
+  "fontFamily": "serif",
+  "fontSize": "lg",
   "backgroundImageUrl": "",
   "themeName": "default"
 }

@@ -8,11 +8,11 @@
     "path": "/widgets/library/time/multi-clock/*",
     "defaultLayout": {
       "w": 6,
-      "h": 5,
+      "h": 9,
       "minW": 4,
       "maxW": 8,
       "minH": 4,
-      "maxH": 8
+      "maxH": 10
     }
   }
 ]
